@@ -14,8 +14,8 @@ export default async (req, res) => {
       {
         input: {
           prompt: imageDescription,
-          width: 768,
-          height: 768,
+          width: 1120,
+          height: 1488,
         }
       }
     );
