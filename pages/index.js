@@ -262,7 +262,7 @@ const Home = () => {
 
 
 
-          <button type="submit" className={`p-2 ${imageRendering ? 'bg-green-700' : 'bg-blue-500 hover:bg-blue-600'} text-white rounded w-full items-center mx-auto`}>
+          <button type="submit" disabled={imageRendering} className={`p-2 ${imageRendering ? 'bg-green-700' : 'bg-blue-500 hover:bg-blue-600'} text-white rounded w-full items-center mx-auto`}>
             {imageRendering ? (
               <span className="flex mx-auto align-center items-center space-x-2 justify-center items-center">
                 <FontAwesomeIcon className='' icon={faSpinner} spin />
