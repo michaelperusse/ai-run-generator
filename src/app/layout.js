@@ -13,15 +13,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className=''>
       <Head>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SCKM47W00K"></script>
-        <script>
-          {`
+          {/* Google tag (gtag.js) */}
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-SCKM47W00K"></script>
+          <script dangerouslySetInnerHTML={{ __html: `
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
+
             gtag('config', 'G-SCKM47W00K');
-          `}
-        </script>
+          `}} />
       </Head>
       <body className={`${inter.className}`}>{children}</body>
     </html>
