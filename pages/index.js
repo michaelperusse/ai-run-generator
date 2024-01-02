@@ -54,7 +54,7 @@ const Home = () => {
     // Convert distance to a number
     let distanceNumber = parseFloat(distance);
     if (isNaN(distanceNumber)) {
-      console.error('Distance is not a number:', distance);
+      // console.error('Distance is not a number:', distance);
       distanceNumber = 26.2; // or some other default value
     }
 
