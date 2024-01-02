@@ -22,6 +22,7 @@ const Home = () => {
   let [imageDescription, setImageDescription] = useState('');
   let [imageRendering, setImageRendering] = useState(false);
   let [imageRendered, setImageRendered] = useState(false);
+  let [copySuccess, setCopySuccess] = useState(false);
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -298,14 +299,36 @@ const Home = () => {
 
 
       {imageRendered && (
-        <button className='border rounded-md mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 mb-8' onClick={() => {
-          let link = document.createElement('a');
-          link.download = 'generated_run.png';
-          link.href = canvasRef.current.toDataURL()
-          link.click();
-        }}>
-          Download image
-        </button>
+        <>
+          <div className='flex justify-between space-x-2'>
+            <button className='border rounded-md mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 mb-8' onClick={() => {
+              let link = document.createElement('a');
+              link.download = 'generated_run.png';
+              link.href = canvasRef.current.toDataURL()
+              link.click();
+            }}>
+              Download image
+            </button>
+            <button className='border rounded-md mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 mb-8' onClick={async () => {
+              const canvas = canvasRef.current;
+              canvas.toBlob(async (blob) => {
+                try {
+                  await navigator.clipboard.write([
+                    new ClipboardItem({
+                      'image/png': blob
+                    })
+                  ]);
+                  setCopySuccess(true);
+                  setTimeout(() => setCopySuccess(false), 2000); // Reset after 2 seconds
+                } catch (err) {
+                  console.error(err);
+                }
+              });
+            }}>
+              {copySuccess ? "Copied!" : "Copy image"}
+            </button>
+          </div>
+        </>
       )}
     </div>
 
