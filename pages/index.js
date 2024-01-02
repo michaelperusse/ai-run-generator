@@ -1,5 +1,9 @@
+
+
+
+
 // pages/index.js
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import '../src/app/globals.css';
 import Replicate from "replicate";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -14,10 +18,79 @@ const Home = () => {
   let [distanceUnits, setDistanceUnits] = useState('');
   let [pace, setPace] = useState('');
   let [time, setTime] = useState('');
+  let [selectedSpeed, setSelectedSpeed] = useState('superslow');
   let [imageDescription, setImageDescription] = useState('');
   let [imageRendering, setImageRendering] = useState(false);
   let [imageRendered, setImageRendered] = useState(false);
   const canvasRef = useRef(null);
+
+  useEffect(() => {
+    let basePace; // in minutes per mile or kilometer
+
+    switch (selectedSpeed) {
+      case 'superslow':
+        basePace = 20.2;
+        break;
+      case 'slow':
+        basePace = 15.3;
+        break;
+      case 'respectable':
+        basePace = 10.1;
+        break;
+      case 'fast':
+        basePace = 8.5;
+        break;
+      case 'wickedfast':
+        basePace = 7.1;
+        break;
+      case 'unbelievablyfast':
+        basePace = 4.1;
+        break;
+      default:
+        break;
+    }
+
+    // Convert distance to a number
+    let distanceNumber = parseFloat(distance);
+    if (isNaN(distanceNumber)) {
+      console.error('Distance is not a number:', distance);
+      distanceNumber = 26.2; // or some other default value
+    }
+
+    // If distanceUnits is kilometers and basePace is in miles, convert basePace to kilometers
+    if (distanceUnits === 'kilometers') {
+      basePace /= 1.60934; // 1 mile is approximately 1.60934 kilometers
+    }
+
+    // Calculate pace and time
+    let calculatedPace = basePace;
+    let calculatedTime = basePace * distanceNumber;
+
+    if (isNaN(calculatedTime)) {
+      console.error('Calculated time is not a number. basePace:', basePace, 'distanceNumber:', distanceNumber);
+      calculatedTime = 10; // or some other default value
+    }
+
+    // Convert calculatedTime to HH:MM:SS format
+    let hours = Math.floor(calculatedTime / 60);
+    let minutes = Math.floor(calculatedTime % 60);
+    let seconds = Math.floor((calculatedTime * 60) % 60);
+
+    calculatedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+    // Convert calculatedPace to MM:SS format
+    minutes = Math.floor(calculatedPace);
+    seconds = Math.floor((calculatedPace * 60) % 60);
+
+    calculatedPace = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+    setPace(calculatedPace); // Update the pace state variable with the calculated pace
+    setTime(calculatedTime); // Update the time state variable with the calculated time
+  }, [selectedSpeed, distance, distanceUnits]);
+
+  const handleChange = (e) => {
+    setSelectedSpeed(e.target.value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,14 +102,8 @@ const Home = () => {
     if (imageDescription === '') {
       imageDescription = "central park NYC";
     }
-    if (pace === '') {
-      pace = "5";
-    }
-    if (time === '') {
-      time = "5";
-    }
-    if (pace === '') {
-      pace = "5";
+    if (distance === '') {
+      distance = "26.2";
     }
 
     imageDescription = "photorealistic 4K photo of " + imageDescription;
@@ -81,7 +148,6 @@ const Home = () => {
 
         if (userImageLoaded && stravaLogoLoaded) {
           ctx.drawImage(userImage, 0, 0, canvas.width, canvas.height);
-          ctx.font = '16px Arial';
 
           const canvasWidth = canvas.width;
 
@@ -90,23 +156,22 @@ const Home = () => {
 
           ctx.font = '18px Tahoma';
           ctx.fillStyle = 'white';
-          ctx.fillText(`Run`, (canvasWidth / 3) * 0 + (canvasWidth / 10), textTitlePosY);
-          ctx.fillText(`Pace`, (canvasWidth / 3) * 1 + (canvasWidth / 10), textTitlePosY);
 
+          let xOffset = canvasWidth / 12;
 
-          ctx.fillText(`Time`, (canvasWidth / 3) * 2 + (canvasWidth / 10), textTitlePosY);
+          ctx.fillText(`Run`, (canvasWidth / 3) * 0 + xOffset, textTitlePosY);
+          ctx.fillText(`Pace`, (canvasWidth / 3) * 1 + xOffset, textTitlePosY);
+          ctx.fillText(`Time`, (canvasWidth / 3) * 2 + xOffset, textTitlePosY);
 
           ctx.font = '30px Tahoma';
-          ctx.fillText(`${distance} ${distanceUnits === 'kilometers' ? 'km' : 'mi'}`, (canvasWidth / 3) * 0 + (canvasWidth / 10), subtitlePosY);
-          ctx.fillText(`${pace} / ${distanceUnits === 'kilometers' ? 'km' : 'mi'}`, (canvasWidth / 3) * 1 + (canvasWidth / 10), subtitlePosY);
-          ctx.fillText(`${time}`, (canvasWidth / 3) * 2 + (canvasWidth / 10), subtitlePosY);
+          ctx.fillText(`${distance} ${distanceUnits === 'kilometers' ? 'km' : 'mi'}`, (canvasWidth / 3) * 0 + xOffset, subtitlePosY);
+          ctx.fillText(`${pace} / ${distanceUnits === 'kilometers' ? 'km' : 'mi'}`, (canvasWidth / 3) * 1 + xOffset, subtitlePosY);
+          ctx.fillText(`${time}`, (canvasWidth / 3) * 2 + xOffset, subtitlePosY);
 
-          // stravaLogo.onload = () => {
           const stravaRatio = 4.76;
           const stravaWidth = 100;
           const stravaHeight = stravaWidth / stravaRatio;
           ctx.drawImage(stravaLogo, canvasWidth / 30, canvasWidth / 30, stravaWidth, stravaHeight);
-          // };
 
           setImageRendering(false);
           setImageRendered(true);
@@ -121,8 +186,11 @@ const Home = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full pt-20">
-      <div className="w-full max-w-md md:mx-auto border py-8 px-8 md:p-12 rounded-xl shadow-sm">
-        <h1 className="text-4xl text-gray-800 font-bold mb-2 text-left">AI Run Generator 🏃‍♀️</h1>
+      <div className="w-full max-w-md md:mx-auto border py-8 px-8 md:p-8 rounded-xl shadow-sm">
+        <h1 className="text-3xl text-gray-800 font-bold mb-2 text-left">
+          <span className='text-gray-400'>STRAV</span>
+          <span className='text-gray-900'>AI</span> Run Generator 🏃‍♀️
+        </h1>
         <div className='text-xs text-gray-600 mb-2'>Let our GPUs run for you. Create awesome Strava parody posts without the hassle of actually running.</div>
         <div className='w-7/8 flex mx-auto align-center items-center border-b border-gray-200 mb-6'></div>
 
@@ -130,7 +198,7 @@ const Home = () => {
           <label className="relative">
             <input
               type="number"
-              placeholder="6.32"
+              placeholder="26.2"
               value={distance}
               onChange={(e) => setDistance(e.target.value)}
               className="p-2 border border-gray-300 rounded w-full"
@@ -160,66 +228,8 @@ const Home = () => {
 
           <label className='relative'>
             <select
-              value={pace}
-              onChange={(e) => {
-                const selectedSpeed = e.target.value;
-                // Do all calculations in miles, update pace at the end if in km
-
-                let basePace; // in minutes per mile or kilometer
-
-                switch (selectedSpeed) {
-                  case 'superslow':
-                    basePace = 30;
-                    break;
-                  case 'slow':
-                    basePace = 20;
-                    break;
-                  case 'respectable':
-                    basePace = 10;
-                    break;
-                  case 'fast':
-                    basePace = 7;
-                    break;
-                  case 'wickedfast':
-                    basePace = 5;
-                    break;
-                  case 'unbelievablyfast':
-                    basePace = 2;
-                    break;
-                  default:
-                    break;
-                }
-
-                // Convert distance to a number
-                let distanceNumber = parseFloat(distance);
-
-                // If distanceUnits is kilometers and basePace is in miles, convert basePace to kilometers
-                if (distanceUnits === 'kilometers') {
-                  basePace /= 1.60934; // 1 mile is approximately 1.60934 kilometers
-                }
-
-                // Calculate pace and time
-                let calculatedPace = basePace;
-                let calculatedTime = basePace * distanceNumber;
-
-                // Convert calculatedTime to HH:MM:SS format
-                let hours = Math.floor(calculatedTime / 60);
-                let minutes = Math.floor(calculatedTime % 60);
-                let seconds = Math.floor((calculatedTime * 60) % 60);
-
-                calculatedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-                // Convert calculatedPace to MM:SS format
-                minutes = Math.floor(calculatedPace);
-                seconds = Math.floor((calculatedPace * 60) % 60);
-
-                calculatedPace = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-                setPace(calculatedPace); // Update the pace state variable with the calculated pace
-                setTime(calculatedTime); // Update the time state variable with the calculated time
-
-
-              }}
+              value={selectedSpeed}
+              onChange={handleChange}
               className="p-2 border border-gray-300 rounded w-full"
             >
               <option value="superslow">🦥 Super Slowww</option>
@@ -272,6 +282,8 @@ const Home = () => {
           </>
         </form>
       </div>
+
+      <div className='text-xs text-gray-300 mt-1 hover:text-red-700 cursor-pointer' onClick={() => window.open('https://twitter.com/mrperusse', '_blank')}> Made with ♥ </div>
 
       <canvas ref={canvasRef} style={{ width: 560, height: 744 }} className="mt-2 mb-1"></canvas>
 
