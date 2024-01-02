@@ -145,10 +145,10 @@ const Home = () => {
 };
 
   return (
-    <div className="flex flex-col items-center mx-auto justify-center min-h-screen w-full pt-20 flex items-center justify-center">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full pt-20">
       <div className="w-full max-w-md mx-auto border p-12 rounded-xl shadow-sm">
         <h1 className="text-4xl text-gray-800 font-bold mb-2 text-left">AI Run Generator 🏃‍♀️</h1>
-
+        <div className='text-xs text-gray-600 mb-2'>Let our GPUs run for you. Create awesome Strava posts without the hassle of actually running.</div>
         <div className='w-7/8 flex mx-auto align-center items-center border-b border-gray-200 mb-6'></div>
 
         <form onSubmit={handleSubmit} className="flex flex-col items-left space-y-6 mx-auto justify-center">
@@ -193,18 +193,30 @@ const Home = () => {
                 // Do all calculations in miles, update pace at the end if in km
 
                 switch (selectedSpeed) {
+                  case 'superslow':
+                    calculatedPace = '10:00'; // replace with your logic
+                    calculatedTime = '60:00'; // replace with your logic
+                    break;
                   case 'slow':
                     calculatedPace = '10:00'; // replace with your logic
                     calculatedTime = '60:00'; // replace with your logic
                     break;
+                  case 'respectable':
+                      calculatedPace = '10:00'; // replace with your logic
+                      calculatedTime = '60:00'; // replace with your logic
+                      break;
                   case 'fast':
                     calculatedPace = '7:30'; // replace with your logic
                     calculatedTime = '45:00'; // replace with your logic
                     break;
-                  case 'wicked fast':
+                  case 'wickedfast':
                     calculatedPace = '5:00'; // replace with your logic
                     calculatedTime = '30:00'; // replace with your logic
                     break;
+                  case 'unbelievablyfast':
+                      calculatedPace = '5:00'; // replace with your logic
+                      calculatedTime = '30:00'; // replace with your logic
+                      break;
                   default:
                     break;
                 }
@@ -214,9 +226,13 @@ const Home = () => {
               }}
               className="p-2 border border-gray-300 rounded w-full"
             >
-              <option value="slow">Slow</option>
-              <option value="fast">Fast</option>
-              <option value="wicked fast">Wicked Fast</option>
+              <option value="superslow">🦥 Super Slowww</option>
+              <option value="slow">🐢 Slow</option>
+              <option value="respectable">🦙 Respectable</option>
+              <option value="fast">🐎 Fast</option>
+              <option value="wickedfast">🐆 Wicked Fast</option>
+              <option value="unbelievablyfast">🚀 Unbelievably Fast</option>
+              
             </select>
 
             {<span className='bg-white text-xs' style={{position: "absolute", top: "-12px", left: "0", padding: "2px", color: "gray"}}>Pace</span>}
@@ -252,11 +268,14 @@ const Home = () => {
 
             <>
             { imageRendering ?
-              (<div className='font-light text-xs'>Did you know? AI runs take about 15-30 seconds to generate, but will save you hours of exertion.</div>) : ""
+              (<div className='font-light text-xs'>Did you know? AI runs take about 15 seconds to generate, but will save you hours of exertion.</div>) : ""
             }
             </>
           </form>
           </div>
+
+          <canvas ref={canvasRef} width="560" height="744" className="mt-8 pb-20"></canvas>
+          
 
           {imageRendered && (
             <button className='border rounded-md mt-2 bg-gray-200 px-4 p-2' onClick={() => {
@@ -268,9 +287,6 @@ const Home = () => {
               Download Image
             </button>
           )}
-          <canvas ref={canvasRef} width="560" height="744" className="mt-8 pb-20"></canvas>
-          
-
       </div>
 
       
