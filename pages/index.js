@@ -146,7 +146,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full pt-20">
-      <div className="w-full max-w-md mx-auto border p-12 rounded-xl shadow-sm">
+      <div className="w-full max-w-md mx-auto border py-8 px-0 md:p-12 rounded-xl shadow-sm mx-8">
         <h1 className="text-4xl text-gray-800 font-bold mb-2 text-left">AI Run Generator 🏃‍♀️</h1>
         <div className='text-xs text-gray-600 mb-2'>Let our GPUs run for you. Create awesome Strava posts without the hassle of actually running.</div>
         <div className='w-7/8 flex mx-auto align-center items-center border-b border-gray-200 mb-6'></div>
@@ -274,7 +274,7 @@ const Home = () => {
         </form>
       </div>
 
-      <canvas ref={canvasRef} width="560" height="744" className="mt-2 pb-0"></canvas>
+      <canvas ref={canvasRef} style={{ width: "560", height: "744" }} className="mt-2 pb-0"></canvas>
 
       {imageRendered && (
         <button className='border rounded-md mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 mb-8' onClick={() => {
