@@ -32,7 +32,7 @@ const Home = () => {
         basePace = 20.2;
         break;
       case 'slow':
-        basePace = 15.3;
+        basePace = 15.2;
         break;
       case 'respectable':
         basePace = 10.1;
