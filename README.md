@@ -1,6 +1,9 @@
 ## What is this?
 
-This is a webapp which generates parody screenshots from the popular running app Stava using:
+![Example Image](public/images/example.png)
+
+
+This is a webapp which generates parody screenshots from the popular running app [Strava](https://www.strava.com/) using:
  - [Stable Diffusion](https://replicate.com/stability-ai/stable-diffusion)
  - via [Replicate](https://replicate.com/)
  - with [Next.js](https://nextjs.org/).
