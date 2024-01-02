@@ -107,7 +107,7 @@ const Home = () => {
       distance = "26.2";
     }
 
-    imageDescription = "photorealistic 4K photo of " + imageDescription;
+    imageDescription = "photograph of " + imageDescription + ", photorealistic HD";
 
     try {
       const response = await fetch('/api/predict', {
@@ -258,11 +258,7 @@ const Home = () => {
             {<span className='bg-white text-xs' style={{ position: "absolute", top: "-12px", left: "0", padding: "2px", color: "gray" }}>Run location</span>}
           </label>
 
-
-
-
-
-          <button type="submit" disabled={imageRendering} className={`p-2 ${imageRendering ? 'bg-green-700' : 'bg-blue-500 hover:bg-blue-600'} text-white rounded w-full items-center mx-auto`}>
+          <button type="submit" disabled={imageRendering} className={`p-2 ${imageRendering ? 'bg-emerald-600' : 'bg-blue-500 hover:bg-blue-600'} text-white rounded w-full items-center mx-auto`}>
             {imageRendering ? (
               <span className="flex mx-auto align-center items-center space-x-2 justify-center items-center">
                 <FontAwesomeIcon className='' icon={faSpinner} spin />
@@ -300,8 +296,8 @@ const Home = () => {
 
       {imageRendered && (
         <>
-          <div className='flex justify-between space-x-2'>
-            <button className='border rounded-md mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 mb-8' onClick={() => {
+          <div className='flex justify-between space-x-2 text-sm'>
+            <button className='border rounded-md mt-2 bg-gray-100 hover:bg-gray-200 px-4 py-3 mb-8' onClick={() => {
               let link = document.createElement('a');
               link.download = 'generated_run.png';
               link.href = canvasRef.current.toDataURL()
@@ -309,7 +305,7 @@ const Home = () => {
             }}>
               Download image
             </button>
-            <button className='border rounded-md mt-2 bg-gray-200 hover:bg-gray-300 px-4 py-2 mb-8' onClick={async () => {
+            <button className='border rounded-md mt-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 mb-8' onClick={async () => {
               const canvas = canvasRef.current;
               canvas.toBlob(async (blob) => {
                 try {
